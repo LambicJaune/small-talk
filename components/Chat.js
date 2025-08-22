@@ -1,34 +1,64 @@
-import { useEffect } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { useState, useEffect } from 'react';
+import { Platform } from 'react-native';
+import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Chat = ({ route, navigation }) => {
-
     const { name, backgroundColor } = route.params;
+    const [messages, setMessages] = useState([]);
+
+    const renderBubble = (props) => {
+        return <Bubble
+            {...props}
+            wrapperStyle={{
+                right: {
+                    backgroundColor: "#ce8551ff"
+                },
+                left: {
+                    backgroundColor: "#fffde8ff"
+                }
+            }}
+        />
+    }
+
+    const onSend = (newMessages) => {
+        setMessages(prev => GiftedChat.append(prev, newMessages));
+    }
 
     useEffect(() => {
         navigation.setOptions({ title: name });
-    }, [name]);
+        setMessages([
+            {
+                _id: 1,
+                text: "Hello developer",
+                createdAt: new Date(),
+                user: {
+                    _id: 2,
+                    name: "React Native",
+                    avatar: "https://placeimg.com/140/140/any",
+                },
+            },
+            {
+                _id: 2,
+                text: 'You have entered the chat',
+                createdAt: new Date(),
+                system: true,
+            },
+        ]);
+    }, []);
 
-    {/* takes on the name and background color set in the Start screen */}
     return (
-        <View style={[styles.container, { backgroundColor }]}> 
-            <Text style={styles.chatText}>Welcome {name}!</Text> 
-        </View> 
+        <SafeAreaView style={{ flex: 1, backgroundColor }}>
+            <GiftedChat
+                messages={messages}
+                onSend={messages => onSend(messages)}
+                user={{ _id: 1 }}
+                keyboardShouldPersistTaps="handled"
+                keyboardVerticalOffset={Platform.OS === 'android' ? 30 : 0}
+                renderBubble={renderBubble}
+            />
+        </SafeAreaView>
     );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    chatText: {
-        fontSize: 25,
-        fontWeight: 'bold',
-        color: 'white',
-        alignSelf: 'center'
-    }
-});
+};
 
 export default Chat;
