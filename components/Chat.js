@@ -48,7 +48,13 @@ const Chat = ({ route, navigation }) => {
     }, []);
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor }}
+            accessible={false}
+            importantForAccessibility="no"
+        >
+            {/* SafeAreaView allows for the keyboard to not hide the text input */}
+
+            {/* Chat library allowing messages to come and go */}
             <GiftedChat
                 messages={messages}
                 onSend={messages => onSend(messages)}

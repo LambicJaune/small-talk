@@ -12,6 +12,8 @@ const Start = ({ navigation }) => {
                 source={require('../assets/Background_Image.png')}
                 style={styles.backgroundBox}
                 resizeMode="cover"
+                accessible={false}
+                importantForAccessibility="no"
             >
                 <Text style={styles.welcomeText}>Small-Talk</Text>
             </ImageBackground>
@@ -24,6 +26,7 @@ const Start = ({ navigation }) => {
                     onChangeText={setName}
                     placeholder="Your name"
                     placeholderTextColor="#BDBAC1"
+                    accessibilityLabel="Name input field"
                 />
                 <View style={styles.colorContainer}>
                     <Text style={styles.colorLabel}>Choose Background Color:</Text>
@@ -31,6 +34,9 @@ const Start = ({ navigation }) => {
                         {['#090C08', '#474056', '#8A95A5', '#B9C6AE'].map((color) => (
                             <TouchableOpacity
                                 key={color}
+                                accessible={true}
+                                accessibilityLabel={`Select ${color} background`}
+                                accessibilityHint='Sets the background color for the chat screen'
                                 style={[
                                     styles.colorCircle,
                                     { backgroundColor: color },
@@ -43,6 +49,9 @@ const Start = ({ navigation }) => {
                 </View>
                 <TouchableOpacity
                     style={styles.customButton}
+                    accessible={true}
+                    accessibilityLabel="Start Chatting"
+                    accessibilityHint='Button redirecting to the chat'
                     onPress={() => navigation.navigate('Chat', { name, backgroundColor: selectedColor })}
                 >
                     <Text style={styles.customButtonText}>Start Chatting</Text>
