@@ -36,10 +36,10 @@ const App = () => {
                 initialRouteName="Start"
             >
                 <Stack.Screen
-  name="Start"
->
-  {props => <Start db={db} app={app} {...props} />}
-</Stack.Screen>
+                    name="Start"
+                >
+                    {props => <Start db={db} app={app} {...props} />}
+                </Stack.Screen>
                 <Stack.Screen
                     name="Chat">
                     {props => <Chat db={db} {...props} />}
