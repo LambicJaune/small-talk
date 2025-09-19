@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, LogBox, Alert } from 'react-native';
 import { useEffect } from 'react';
+import { getStorage } from "firebase/storage";
 
 
 // import react Navigation
@@ -40,6 +41,8 @@ const App = () => {
 
     const netInfo = useNetInfo();
 
+    const storage = getStorage(app);
+
     useEffect(() => {
         if (netInfo.isConnected === false) {
             Alert.alert("Connection lost")
@@ -62,7 +65,7 @@ const App = () => {
                 </Stack.Screen>
                 <Stack.Screen
                     name="Chat">
-                    {props => <Chat db={db} isConnected={netInfo.isConnected} {...props} />}
+                    {props => <Chat db={db} storage={storage} isConnected={netInfo.isConnected} {...props} />}
                 </Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>

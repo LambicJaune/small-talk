@@ -2,11 +2,13 @@ import { TouchableOpacity, Text, View, StyleSheet, Alert } from "react-native";
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
+
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
     const actionSheet = useActionSheet();
     const onActionPress = () => {
-        const options = ['Select an image rrom library', 'Take Picture', 'Send Location', 'Cancel'];
+        const options = ['Select an image from library', 'Take Picture', 'Send Location', 'Cancel'];
         const cancelButtonIndex = options.length - 1;
         actionSheet.showActionSheetWithOptions(
             {
@@ -60,7 +62,12 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
         const blob = await response.blob();
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
             const imageURL = await getDownloadURL(snapshot.ref);
-            onSend({ image: imageURL })
+            onSend([{
+                _id: new Date().getTime(),
+                createdAt: new Date(),
+                user: { _id: userID },
+                image: imageURL
+            }])
         });
     };
 
@@ -69,12 +76,16 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend }) => {
         if (permissions?.granted) {
             const location = await Location.getCurrentPositionAsync({});
             if (location) {
-                onSend({
+                onSend([{
+                    _id: new Date().getTime(),
+                    createdAt: new Date(),
+                    user: { _id: userID },
                     location: {
                         longitude: location.coords.longitude,
                         latitude: location.coords.latitude,
                     },
-                });
+                }])
+
             } else Alert.alert("Error occurred while fetching location");
         } else Alert.alert("Permissions haven't been granted.");
     };
