@@ -65,7 +65,8 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
             onSend([{
                 _id: new Date().getTime(),
                 createdAt: new Date(),
-                user: { _id: userID },
+                text: '',
+                user: { _id: userID, name: userName },
                 image: imageURL
             }])
         });
@@ -79,7 +80,8 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
                 onSend([{
                     _id: new Date().getTime(),
                     createdAt: new Date(),
-                    user: { _id: userID },
+                    text: '',
+                    user: { _id: userID, name: userName },
                     location: {
                         longitude: location.coords.longitude,
                         latitude: location.coords.latitude,

@@ -28,7 +28,11 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
     }
 
     const onSend = (newMessages) => {
-        addDoc(collection(db, "messages"), newMessages[0])
+        addDoc(collection(db, "messages"), {
+            ...newMessages[0],
+            createdAt: serverTimestamp()
+        });
+
     }
 
     let unsubMessages;
@@ -80,7 +84,7 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
     }
 
     const renderCustomActions = (props) => {
-        return <CustomActions storage={storage} userID={userID} {...props} />;
+        return <CustomActions storage={storage} userID={userID} userName={name} {...props} />;
     };
 
     const renderCustomView = (props) => {
