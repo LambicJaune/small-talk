@@ -1,17 +1,19 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Platform, View } from 'react-native';
+import { Platform, View, Modal, Image, TouchableOpacity } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const Chat = ({ route, navigation, db, storage, isConnected }) => {
     const { name, userID, backgroundColor } = route.params;
     const [messages, setMessages] = useState([]);
-
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const renderBubble = (props) => {
         return <Bubble
@@ -25,7 +27,7 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
                 }
             }}
         />
-    }
+    };
 
     const onSend = (newMessages) => {
         const message = {
@@ -112,6 +114,24 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
         return null;
     }
 
+    // Render message image with modal for full-screen view on tap
+    const renderMessageImage = (props) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedImage(props.currentMessage.image);
+          setModalVisible(true);
+        }}
+      >
+        <Image
+          source={{ uri: props.currentMessage.image }}
+          style={{ width: 200, height: 200, borderRadius: 10, margin: 3 }}
+          resizeMode="cover"
+        />
+      </TouchableOpacity>
+    );
+  };
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor }}
             accessible={false}
@@ -130,7 +150,17 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
                 renderInputToolbar={renderInputToolbar}
                 renderActions={renderCustomActions}
                 renderCustomView={renderCustomView}
+                renderMessageImage={renderMessageImage}
             />
+             {/* Fullscreen Image Viewer Modal */}
+      <Modal visible={modalVisible} transparent={true}>
+        <ImageViewer
+          imageUrls={[{ url: selectedImage }]}
+          onClick={() => setModalVisible(false)}
+          enableSwipeDown
+          onSwipeDown={() => setModalVisible(false)}
+        />
+      </Modal>
         </SafeAreaView>
     );
 };
