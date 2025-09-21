@@ -56,14 +56,12 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID, u
     }
 
     const uploadAndSendImage = async (imageURI) => {
-            console.log("📸 Uploading image:", imageURI);
         const uniqueRefString = generateReference(imageURI);
         const newUploadRef = ref(storage, uniqueRefString);
         const response = await fetch(imageURI);
         const blob = await response.blob();
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
             const imageURL = await getDownloadURL(snapshot.ref);
-            console.log("✅ Uploaded image URL:", imageURL);
             onSend([{
                 _id: `img-${new Date().getTime()}`,
                 createdAt: new Date(),

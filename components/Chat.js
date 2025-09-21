@@ -27,16 +27,13 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
         />
     }
 
-   const onSend = (newMessages) => {
-  const message = {
-    ...newMessages[0],
-    createdAt: serverTimestamp(),
-  };
-
-  console.log("✉️ Sending message to Firestore:", message);
-
-  addDoc(collection(db, "messages"), message);
-};
+    const onSend = (newMessages) => {
+        const message = {
+            ...newMessages[0],
+            createdAt: serverTimestamp(),
+        };
+        addDoc(collection(db, "messages"), message);
+    };
 
     let unsubMessages;
 
@@ -55,8 +52,6 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
                             : new Date(),
                     })
                 })
-                console.log("🔥 Firestore messages:", JSON.stringify(newMessages, null, 2));
-
                 cacheMessages(newMessages);
                 setMessages(newMessages);
             })
