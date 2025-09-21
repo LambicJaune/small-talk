@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 
-const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID }) => {
+const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID, userName }) => {
     const actionSheet = useActionSheet();
     const onActionPress = () => {
         const options = ['Select an image from library', 'Take Picture', 'Send Location', 'Cancel'];
@@ -56,14 +56,16 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
     }
 
     const uploadAndSendImage = async (imageURI) => {
+            console.log("📸 Uploading image:", imageURI);
         const uniqueRefString = generateReference(imageURI);
         const newUploadRef = ref(storage, uniqueRefString);
         const response = await fetch(imageURI);
         const blob = await response.blob();
         uploadBytes(newUploadRef, blob).then(async (snapshot) => {
             const imageURL = await getDownloadURL(snapshot.ref);
+            console.log("✅ Uploaded image URL:", imageURL);
             onSend([{
-                _id: new Date().getTime(),
+                _id: `img-${new Date().getTime()}`,
                 createdAt: new Date(),
                 text: '',
                 user: { _id: userID, name: userName },
@@ -78,7 +80,7 @@ const CustomActions = ({ wrapperStyle, iconTextStyle, onSend, storage, userID })
             const location = await Location.getCurrentPositionAsync({});
             if (location) {
                 onSend([{
-                    _id: new Date().getTime(),
+                    _id: `loc-${new Date().getTime()}`,
                     createdAt: new Date(),
                     text: '',
                     user: { _id: userID, name: userName },

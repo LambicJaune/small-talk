@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Platform, View } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CustomActions from './CustomActions';
 import MapView from 'react-native-maps';
@@ -27,13 +27,16 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
         />
     }
 
-    const onSend = (newMessages) => {
-        addDoc(collection(db, "messages"), {
-            ...newMessages[0],
-            createdAt: serverTimestamp()
-        });
+   const onSend = (newMessages) => {
+  const message = {
+    ...newMessages[0],
+    createdAt: serverTimestamp(),
+  };
 
-    }
+  console.log("✉️ Sending message to Firestore:", message);
+
+  addDoc(collection(db, "messages"), message);
+};
 
     let unsubMessages;
 
@@ -45,11 +48,15 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
                 let newMessages = [];
                 docs.forEach(doc => {
                     newMessages.push({
-                        id: doc.id,
+                        _id: doc.id,
                         ...doc.data(),
-                        createdAt: new Date(doc.data().createdAt.toMillis())
+                        createdAt: doc.data().createdAt?.toDate()
+                            ? doc.data().createdAt.toDate()
+                            : new Date(),
                     })
                 })
+                console.log("🔥 Firestore messages:", JSON.stringify(newMessages, null, 2));
+
                 cacheMessages(newMessages);
                 setMessages(newMessages);
             })
@@ -84,7 +91,7 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
     }
 
     const renderCustomActions = (props) => {
-        return <CustomActions storage={storage} userID={userID} userName={name} {...props} />;
+        return <CustomActions storage={storage} userID={userID} userName={name} onSend={messages => onSend(messages)} {...props} />;
     };
 
     const renderCustomView = (props) => {
