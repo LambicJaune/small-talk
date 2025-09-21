@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, LogBox, Alert } from 'react-native';
+import { Alert } from 'react-native';
 import { useEffect } from 'react';
 import { getStorage } from "firebase/storage";
 
@@ -8,20 +7,17 @@ import { getStorage } from "firebase/storage";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// import AsyncStorage for local storage
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-// detects a network connection to fetch data from either the db or AsynStorage
+// detects a network connection to fetch data
 import { useNetInfo } from '@react-native-community/netinfo';
-
-// Create the navigator
-const Stack = createNativeStackNavigator();
 
 import { initializeApp } from "firebase/app";
 import { getFirestore, enableNetwork, disableNetwork } from "firebase/firestore";
 
 import Start from './components/Start';
 import Chat from './components/Chat';
+
+// Create the navigator
+const Stack = createNativeStackNavigator();
 
 const App = () => {
     const firebaseConfig = {
@@ -71,14 +67,5 @@ const App = () => {
         </NavigationContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
 
 export default App;

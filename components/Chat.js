@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Platform, View, Modal, Image, TouchableOpacity } from 'react-native';
+import { Platform, Modal, Image, TouchableOpacity } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore";
@@ -116,21 +116,21 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
 
     // Render message image with modal for full-screen view on tap
     const renderMessageImage = (props) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          setSelectedImage(props.currentMessage.image);
-          setModalVisible(true);
-        }}
-      >
-        <Image
-          source={{ uri: props.currentMessage.image }}
-          style={{ width: 200, height: 200, borderRadius: 10, margin: 3 }}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
-    );
-  };
+        return (
+            <TouchableOpacity
+                onPress={() => {
+                    setSelectedImage(props.currentMessage.image);
+                    setModalVisible(true);
+                }}
+            >
+                <Image
+                    source={{ uri: props.currentMessage.image }}
+                    style={{ width: 200, height: 200, borderRadius: 10, margin: 3 }}
+                    resizeMode="cover"
+                />
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor }}
@@ -152,15 +152,15 @@ const Chat = ({ route, navigation, db, storage, isConnected }) => {
                 renderCustomView={renderCustomView}
                 renderMessageImage={renderMessageImage}
             />
-             {/* Fullscreen Image Viewer Modal */}
-      <Modal visible={modalVisible} transparent={true}>
-        <ImageViewer
-          imageUrls={[{ url: selectedImage }]}
-          onClick={() => setModalVisible(false)}
-          enableSwipeDown
-          onSwipeDown={() => setModalVisible(false)}
-        />
-      </Modal>
+            {/* Fullscreen Image Viewer Modal */}
+            <Modal visible={modalVisible} transparent={true}>
+                <ImageViewer
+                    imageUrls={[{ url: selectedImage }]}
+                    onClick={() => setModalVisible(false)}
+                    enableSwipeDown
+                    onSwipeDown={() => setModalVisible(false)}
+                />
+            </Modal>
         </SafeAreaView>
     );
 };
